@@ -60,4 +60,3 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio")
 
   set_property(TARGET scope_exit PROPERTY CXX_STANDARD 17)
 endif()
-
