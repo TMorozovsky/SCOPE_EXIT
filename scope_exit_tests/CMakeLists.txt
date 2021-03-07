@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.16)
 
 project(scope_exit_tests)
 
@@ -41,21 +41,23 @@ add_custom_command(TARGET scope_exit_tests
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT scope_exit_tests)
 
 
-# Add the library itself as a target in order to be more IDE-friendly
+# Visual Studio-specific: add the library itself as a target in order to be more IDE-friendly
+if (CMAKE_GENERATOR MATCHES "Visual Studio")
+  get_filename_component(SCOPE_EXIT_FILES_ABSOLUTE_PATH "../scope_exit" ABSOLUTE)
 
-get_filename_component(SCOPE_EXIT_FILES_ABSOLUTE_PATH "../scope_exit" ABSOLUTE)
+  file(GLOB_RECURSE SCOPE_EXIT_ALL_FILES
+       LIST_DIRECTORIES FALSE
+       "${SCOPE_EXIT_FILES_ABSOLUTE_PATH}/*")
 
-file(GLOB_RECURSE SCOPE_EXIT_ALL_FILES
-     LIST_DIRECTORIES FALSE
-     "${SCOPE_EXIT_FILES_ABSOLUTE_PATH}/*")
+  foreach(SCOPE_EXIT_FILE IN ITEMS ${SCOPE_EXIT_ALL_FILES})
+      get_filename_component(SCOPE_EXIT_FILE_PATH "${SCOPE_EXIT_FILE}" PATH)
+      file(RELATIVE_PATH SCOPE_EXIT_FILE_RELATIVE_PATH "${SCOPE_EXIT_FILES_ABSOLUTE_PATH}" "${SCOPE_EXIT_FILE_PATH}")
+      string(REPLACE "/" "\\" SCOPE_EXIT_FILE_GROUP_PATH "${SCOPE_EXIT_FILE_RELATIVE_PATH}")
+      source_group("${SCOPE_EXIT_FILE_GROUP_PATH}" FILES "${SCOPE_EXIT_FILE}")
+  endforeach()
 
-foreach(SCOPE_EXIT_FILE IN ITEMS ${SCOPE_EXIT_ALL_FILES})
-    get_filename_component(SCOPE_EXIT_FILE_PATH "${SCOPE_EXIT_FILE}" PATH)
-    file(RELATIVE_PATH SCOPE_EXIT_FILE_RELATIVE_PATH "${SCOPE_EXIT_FILES_ABSOLUTE_PATH}" "${SCOPE_EXIT_FILE_PATH}")
-    string(REPLACE "/" "\\" SCOPE_EXIT_FILE_GROUP_PATH "${SCOPE_EXIT_FILE_RELATIVE_PATH}")
-    source_group("${SCOPE_EXIT_FILE_GROUP_PATH}" FILES "${SCOPE_EXIT_FILE}")
-endforeach()
+  add_library(scope_exit INTERFACE ${SCOPE_EXIT_ALL_FILES})
 
-add_library(scope_exit INTERFACE ${SCOPE_EXIT_ALL_FILES})
+  set_property(TARGET scope_exit PROPERTY CXX_STANDARD 17)
+endif()
 
-set_property(TARGET scope_exit PROPERTY CXX_STANDARD 17)
