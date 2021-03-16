@@ -208,7 +208,7 @@ TEST(test_scope_exit, scope_success_can_throw_during_stack_unwinding)
 
 namespace
 {
-  constexpr int compile_time_testing_result = []()
+  constexpr int compile_time_testing_result = []() constexpr
   {
     int result = 0;
     if (true)
