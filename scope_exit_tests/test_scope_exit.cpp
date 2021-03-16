@@ -205,3 +205,21 @@ TEST(test_scope_exit, scope_success_can_throw_during_stack_unwinding)
   EXPECT_TRUE(caught_test_exception);
   EXPECT_TRUE(caught_unwinding_exception);
 }
+
+namespace
+{
+  constexpr int compile_time_testing_result = []()
+  {
+    int result = 0;
+    if (true)
+    {
+      SCOPE_EXIT
+      {
+        result = 42;
+      };
+    }
+    return result;
+  }();
+
+  static_assert(compile_time_testing_result == 42);
+}
