@@ -5,4 +5,3 @@ conan install .. -s build_type=Debug -s compiler="Visual Studio" -s compiler.ver
 cmake.exe -G "Visual Studio 16 2019" -A x64 ../scope_exit_tests -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CONFIGURATION_TYPES=Debug
 cd ..
 cd build_scripts
-

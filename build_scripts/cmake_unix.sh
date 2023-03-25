@@ -5,4 +5,3 @@ conan install .. --build=missing
 cmake ../scope_exit_tests
 cd ..
 cd build_scripts
-
