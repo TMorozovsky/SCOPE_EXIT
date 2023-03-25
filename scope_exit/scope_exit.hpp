@@ -4,6 +4,12 @@
 #include <exception>
 #include <utility>
 
+#if (__cplusplus >= 202002L) || (defined(_MSC_VER) && defined(_MSVC_LANG) && (_MSVC_LANG > 201703L))
+#  define CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT 1
+#else
+#  define CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT 0
+#endif
+
 namespace detail::scope_exit_detail
 {
   template<typename Function, typename Policy>
@@ -20,7 +26,12 @@ namespace detail::scope_exit_detail
     basic_scope_guard(const basic_scope_guard&) = delete;
     basic_scope_guard& operator=(const basic_scope_guard&) = delete;
 
-    constexpr ~basic_scope_guard() noexcept(Policy::is_destructor_noexcept)
+#if CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT
+    constexpr
+#else
+    inline
+#endif
+      ~basic_scope_guard() noexcept(Policy::is_destructor_noexcept)
     {
       if (this->should_execute_function_in_destructor())
         ::std::move(this->function_on_exit)();

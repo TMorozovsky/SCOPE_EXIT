@@ -24,7 +24,11 @@ add_executable(scope_exit_tests
 
 target_include_directories(scope_exit_tests PRIVATE "..")
 
-set_property(TARGET scope_exit_tests PROPERTY CXX_STANDARD 20)
+if (${NO_CPP20_CONSTEXPR_DESTRUCTORS})
+  set_property(TARGET scope_exit_tests PROPERTY CXX_STANDARD 17)
+else()
+  set_property(TARGET scope_exit_tests PROPERTY CXX_STANDARD 20)
+endif()
 
 target_link_libraries(scope_exit_tests PRIVATE GTest::gtest_main)
 
@@ -52,5 +56,9 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio")
 
   add_library(scope_exit INTERFACE ${SCOPE_EXIT_ALL_FILES})
 
-  set_property(TARGET scope_exit PROPERTY CXX_STANDARD 20)
+  if (${NO_CPP20_CONSTEXPR_DESTRUCTORS})
+    set_property(TARGET scope_exit PROPERTY CXX_STANDARD 17)
+  else()
+    set_property(TARGET scope_exit PROPERTY CXX_STANDARD 20)
+  endif()
 endif()

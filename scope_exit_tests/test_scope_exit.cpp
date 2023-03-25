@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
+#include <iostream>
+#include <iomanip>
 
 #include "scope_exit/scope_exit.hpp"
 
@@ -44,6 +46,18 @@ namespace
 
     Callable callable;
   };
+
+  static const struct constexpr_destructors_availability_logger final
+  {
+    constexpr_destructors_availability_logger()
+    {
+      std::cout << "SCOPE_EXIT tests: are constexpr destructors supported?" <<
+                   ' ' <<
+                   std::boolalpha <<
+                   static_cast<bool>(CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT) <<
+                   '\n';
+    }
+  } global_constexpr_destructors_availability_logger_instance{};
 }
 
 TEST(test_scope_exit, scope_exit_executes_its_function_when_no_exceptions_are_thrown)
@@ -206,6 +220,7 @@ TEST(test_scope_exit, scope_success_can_throw_during_stack_unwinding)
   EXPECT_TRUE(caught_unwinding_exception);
 }
 
+#if CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT
 namespace
 {
   constexpr int compile_time_testing_result = []() constexpr
@@ -223,3 +238,4 @@ namespace
 
   static_assert(compile_time_testing_result == 42);
 }
+#endif
