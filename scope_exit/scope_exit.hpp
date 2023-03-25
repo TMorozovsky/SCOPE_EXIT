@@ -4,7 +4,7 @@
 #include <exception>
 #include <utility>
 
-#if (__cplusplus >= 202002L) || (defined(_MSC_VER) && defined(_MSVC_LANG) && (_MSVC_LANG > 201703L))
+#if (__cplusplus >= 202002L) || (defined(__cpp_constexpr) && (__cpp_constexpr >= 201907))
 #  define CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT 1
 #else
 #  define CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT 0

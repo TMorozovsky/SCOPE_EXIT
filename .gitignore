@@ -1,5 +1,7 @@
 ﻿/build
+﻿/build_cpp17_mode
 /build_debug
 /build_debug_cpp17_mode
 /build_release
 /build_release_cpp17_mode
+

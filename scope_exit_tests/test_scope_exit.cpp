@@ -47,17 +47,27 @@ namespace
     Callable callable;
   };
 
-  static const struct constexpr_destructors_availability_logger final
+  static const struct cpp_features_logger final
   {
-    constexpr_destructors_availability_logger()
+    cpp_features_logger()
     {
+      std::cout << "SCOPE_EXIT tests: __cplusplus value is" <<
+                   ' ' <<
+                   __cplusplus <<
+                   '\n';
+#if defined(__cpp_constexpr)
+      std::cout << "SCOPE_EXIT tests: __cpp_constexpr value is" <<
+                   ' ' <<
+                   __cpp_constexpr <<
+                   '\n';
+#endif
       std::cout << "SCOPE_EXIT tests: are constexpr destructors supported?" <<
                    ' ' <<
                    std::boolalpha <<
                    static_cast<bool>(CONSTEXPR_DESTRUCTORS_SUPPORTED_BY_SCOPE_EXIT) <<
                    '\n';
     }
-  } global_constexpr_destructors_availability_logger_instance{};
+  } global_cpp_features_logger_instance{};
 }
 
 TEST(test_scope_exit, scope_exit_executes_its_function_when_no_exceptions_are_thrown)
