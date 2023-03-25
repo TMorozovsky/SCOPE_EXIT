@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
 
 project(scope_exit_tests)
 
@@ -9,18 +9,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Find GTest
 
-if (NOT EXISTS "${CMAKE_BINARY_DIR}/googletest-src" OR NOT EXISTS "${CMAKE_BINARY_DIR}/googletest-build")
-  configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-  execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download")
-  execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download")
-endif()
-
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
-                 "${CMAKE_BINARY_DIR}/googletest-build")
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+find_package(GTest REQUIRED)
 
 
 # Add a unit tests project
@@ -32,7 +26,7 @@ target_include_directories(scope_exit_tests PRIVATE "..")
 
 set_property(TARGET scope_exit_tests PROPERTY CXX_STANDARD 20)
 
-target_link_libraries(scope_exit_tests PRIVATE gtest_main)
+target_link_libraries(scope_exit_tests PRIVATE GTest::gtest_main)
 
 add_custom_command(TARGET scope_exit_tests
                    POST_BUILD
